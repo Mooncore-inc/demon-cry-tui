@@ -20,3 +20,7 @@ lint-fix: ## Run linters and auto-fix issues
 .PHONY: format
 format: ## Format code automatically
 	uv run ruff format
+
+.PHONY: secrets-reset
+secrets-reset: ## Delete all demon-cry-tui secrets from the system keyring
+	uv run python scripts/reset_secrets.py
