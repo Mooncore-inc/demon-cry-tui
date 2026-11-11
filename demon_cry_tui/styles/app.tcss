@@ -1,8 +1,3 @@
-#placeholder {
-    width: auto;
-    height: auto;
-}
-
 .hint {
     color: $text-muted;
 }
@@ -76,4 +71,42 @@ ConfirmScreen {
 #form-actions Button,
 #confirm-actions Button {
     margin-left: 1;
+}
+
+#main {
+    height: 1fr;
+}
+
+#sidebar {
+    width: 36;
+    border-right: solid $panel;
+    padding: 0 1;
+}
+
+#sidebar-title {
+    text-style: bold;
+}
+
+#sidebar-rule {
+    margin: 0;
+    color: $panel;
+}
+
+#investigations {
+    height: 1fr;
+    border: none;
+    background: transparent;
+}
+
+#content {
+    width: 1fr;
+    padding: 1 2;
+}
+
+#content-title {
+    text-style: bold;
+}
+
+#keyring-status {
+    color: $text-muted;
 }

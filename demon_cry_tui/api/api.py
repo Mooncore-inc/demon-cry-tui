@@ -1,6 +1,14 @@
 from typing import Any
 
 import httpx
+from pydantic import BaseModel, ConfigDict
+
+
+class Investigate(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+
+    id: int
+    name: str
 
 
 class DemonCryAPIError(Exception):
@@ -45,11 +53,13 @@ class DemonCryAPI:
         except ValueError:
             return r.text
 
-    async def list_investigates(self) -> list[dict[str, Any]]:
-        return await self._req("GET", "/api/v1/investigates/")
+    async def list_investigates(self) -> list[Investigate]:
+        data = await self._req("GET", "/api/v1/investigates/")
+        return [Investigate.model_validate(item) for item in data]
 
-    async def create_investigate(self, name: str) -> dict[str, Any]:
-        return await self._req("POST", "/api/v1/investigates/", json={"name": name})
+    async def create_investigate(self, name: str) -> Investigate:
+        data = await self._req("POST", "/api/v1/investigates/", json={"name": name})
+        return Investigate.model_validate(data)
 
     async def delete_investigate(self, inv_id: int) -> None:
         await self._req("DELETE", f"/api/v1/investigates/{inv_id}")
