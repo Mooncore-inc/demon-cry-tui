@@ -8,14 +8,17 @@ from textual.widgets import Footer, Header, Label, ListItem, ListView, Rule
 
 from demon_cry_tui.api import DemonCryAPI, DemonCryAPIError, Investigate
 from demon_cry_tui.config import (
+    ActiveClient,
     CatalogError,
     ConnectionStore,
     SecretStoreError,
     load_config,
 )
-from demon_cry_tui.screens import ClientsScreen
+from demon_cry_tui.screens import ClientsScreen, NamePrompt
 
 STORE_ERRORS = (CatalogError, SecretStoreError)
+ADD_INVESTIGATE_ID = "add-investigate"
+ADD_INVESTIGATE_LABEL = "+ add investigation"
 
 
 class DemonCryApp(App[None]):
@@ -28,6 +31,7 @@ class DemonCryApp(App[None]):
         ("ctrl+q", "quit", "Quit"),
         ("ctrl+s", "clients", "Clients"),
         ("ctrl+r", "refresh", "Refresh"),
+        ("ctrl+n", "new_investigate", "New investigation"),
     ]
 
     def __init__(self) -> None:
@@ -69,7 +73,20 @@ class DemonCryApp(App[None]):
     def action_refresh(self) -> None:
         self._refresh()
 
+    def action_new_investigate(self) -> None:
+        active = self._active()
+        if active is None or not active.token:
+            self.notify("No active client with token", severity="warning", timeout=4)
+            return
+        self.push_screen(
+            NamePrompt("New investigation", placeholder="project"),
+            self._create_investigate,
+        )
+
     def on_list_view_selected(self, event: ListView.Selected) -> None:
+        if event.item.id == ADD_INVESTIGATE_ID:
+            self.action_new_investigate()
+            return
         if not 0 <= event.index < len(self.investigations):
             return
         investigate = self.investigations[event.index]
@@ -83,13 +100,7 @@ class DemonCryApp(App[None]):
         keyring = self.query_one("#keyring-status", Label)
         keyring.update(f"keyring: {self.connections.backend}")
 
-        try:
-            active = self.connections.active()
-        except STORE_ERRORS as exc:
-            status.update("no client")
-            self._notify_error(exc)
-            return
-
+        active = self._active()
         if active is None:
             status.update("no client — ctrl+s")
             self._set_hint("")
@@ -104,11 +115,7 @@ class DemonCryApp(App[None]):
     async def _load_investigations(self) -> None:
         await self._clear_investigations()
 
-        try:
-            active = self.connections.active()
-        except STORE_ERRORS as exc:
-            self._notify_error(exc)
-            return
+        active = self._active()
         if active is None:
             return
         if not active.token:
@@ -129,16 +136,48 @@ class DemonCryApp(App[None]):
             return
 
         self.investigations = investigations
-        if not investigations:
-            self._set_hint("no investigations")
-            return
-
-        await self.query_one("#investigations", ListView).extend(
+        list_view = self.query_one("#investigations", ListView)
+        await list_view.extend(
             ListItem(Label(f"#{investigate.id} {investigate.name}"))
             for investigate in investigations
         )
-        self.query_one("#investigations", ListView).index = 0
-        self._set_hint(f"{len(investigations)} total")
+        await list_view.append(
+            ListItem(Label(ADD_INVESTIGATE_LABEL), id=ADD_INVESTIGATE_ID)
+        )
+        list_view.index = 0
+        self._set_hint(
+            f"{len(investigations)} total" if investigations else "no investigations"
+        )
+
+    @work(exclusive=True)
+    async def _create_investigate(self, name: str | None) -> None:
+        if not name:
+            return
+        active = self._active()
+        if active is None or not active.token:
+            self.notify("No active client with token", severity="warning", timeout=4)
+            return
+
+        try:
+            async with DemonCryAPI(
+                active.client.api_url,
+                active.token,
+                self.config.request_timeout,
+            ) as api:
+                investigate = await api.create_investigate(name)
+        except (DemonCryAPIError, httpx.HTTPError) as exc:
+            self._notify_error(exc)
+            return
+
+        self.notify(f"Created #{investigate.id} {investigate.name}")
+        self._load_investigations()
+
+    def _active(self) -> ActiveClient | None:
+        try:
+            return self.connections.active()
+        except STORE_ERRORS as exc:
+            self._notify_error(exc)
+            return None
 
     async def _clear_investigations(self) -> None:
         self.investigations = []

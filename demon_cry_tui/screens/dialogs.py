@@ -84,6 +84,52 @@ class ClientForm(ModalScreen[ClientValues | None]):
         self.dismiss(values)
 
 
+class NamePrompt(ModalScreen[str | None]):
+    """Ввод одного имени. Dismiss: строка или None при отмене."""
+
+    BINDINGS = [("escape", "cancel", "Cancel")]
+
+    def __init__(self, title: str, *, placeholder: str = "") -> None:
+        super().__init__()
+        self._title = title
+        self._placeholder = placeholder
+
+    def compose(self) -> ComposeResult:
+        with Vertical(id="form-dialog"):
+            yield Label(self._title, classes="dialog-title")
+            yield Label("Name")
+            yield Input(placeholder=self._placeholder, id="name-input")
+            with Horizontal(id="form-actions"):
+                yield Button("Cancel", id="form-cancel")
+                yield Button("Create", variant="primary", id="form-save")
+
+    def on_mount(self) -> None:
+        self.query_one("#name-input", Input).focus()
+
+    def on_input_submitted(self, event: Input.Submitted) -> None:
+        event.stop()
+        self.submit()
+
+    def on_button_pressed(self, event: Button.Pressed) -> None:
+        if event.button.id == "form-save":
+            self.submit()
+        else:
+            self.action_cancel()
+
+    def action_cancel(self) -> None:
+        self.dismiss(None)
+
+    def submit(self) -> None:
+        name = self.query_one("#name-input", Input).value.strip()
+        if not name:
+            self.notify("Name is required", severity="warning", timeout=3)
+            return
+        self.call_after_refresh(self._close, name)
+
+    def _close(self, name: str) -> None:
+        self.dismiss(name)
+
+
 class ConfirmScreen(ModalScreen[bool]):
     """Подтверждение действия."""
 

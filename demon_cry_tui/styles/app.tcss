@@ -4,7 +4,8 @@
 
 ClientsScreen,
 ClientForm,
-ConfirmScreen {
+ConfirmScreen,
+NamePrompt {
     align: center middle;
 }
 
