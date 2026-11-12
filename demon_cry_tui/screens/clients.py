@@ -7,6 +7,7 @@ from textual.app import ComposeResult
 from textual.containers import Horizontal, Vertical
 from textual.screen import ModalScreen
 from textual.widgets import Button, Label, OptionList
+from textual.widgets.button import ButtonVariant
 from textual.widgets.option_list import Option
 
 from demon_cry_tui.config import (
@@ -31,7 +32,7 @@ class ClientsScreen(ModalScreen[None]):
         ("d", "delete", "Delete"),
     ]
 
-    BUTTONS = (
+    BUTTONS: tuple[tuple[str, ButtonVariant, str], ...] = (
         ("Add client", "primary", "add"),
         ("Edit", "default", "edit"),
         ("Delete", "error", "delete"),
@@ -133,7 +134,7 @@ class ClientsScreen(ModalScreen[None]):
             return
         self._reload(select_id=client_id)
 
-    def _delete(self, client_id: str, confirmed: bool) -> None:
+    def _delete(self, client_id: str, confirmed: bool | None) -> None:
         if not confirmed:
             return
         try:

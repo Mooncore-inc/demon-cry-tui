@@ -78,7 +78,7 @@ NamePrompt {
     height: 1fr;
 }
 
-#sidebar {
+Sidebar {
     width: 36;
     border-right: solid $panel;
     padding: 0 1;
