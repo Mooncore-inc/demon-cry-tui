@@ -1,0 +1,177 @@
+.hint {
+    color: $text-muted;
+}
+
+ClientsScreen,
+ClientForm,
+ConfirmScreen,
+EntityEditForm,
+EntityForm,
+EnumPicker,
+NamePrompt,
+ToolParamsForm,
+ToolsScreen {
+    align: center middle;
+}
+
+#clients-dialog,
+#form-dialog,
+#confirm-dialog {
+    padding: 1 2;
+    background: $surface;
+}
+
+#clients-dialog {
+    width: 90%;
+    max-width: 100;
+    height: 80%;
+    border: thick $primary;
+}
+
+#form-dialog {
+    width: 72;
+    height: auto;
+    max-height: 90%;
+    overflow-y: auto;
+    border: thick $primary;
+}
+
+#tools-dialog {
+    width: 90;
+    height: 60%;
+    padding: 1 2;
+    background: $surface;
+    border: thick $primary;
+}
+
+#tools-list {
+    height: 1fr;
+    border: round $panel;
+    padding: 0 1;
+}
+
+#confirm-dialog {
+    width: 72;
+    height: auto;
+    border: thick $error;
+}
+
+.dialog-title {
+    text-style: bold;
+}
+
+.dialog-hint {
+    color: $text-muted;
+    padding-bottom: 1;
+}
+
+#clients-list {
+    height: 1fr;
+    border: round $panel;
+    padding: 0 1;
+}
+
+#form-dialog Input {
+    margin-bottom: 1;
+}
+
+#form-dialog Select,
+#form-dialog .param-multi {
+    width: 100%;
+    margin-bottom: 1;
+}
+
+#enum-dialog {
+    width: 56;
+    height: auto;
+    max-height: 80%;
+    padding: 1 2;
+    background: $surface;
+    border: thick $primary;
+}
+
+#enum-options {
+    height: auto;
+    max-height: 18;
+    background: transparent;
+    border: round $panel;
+    padding: 0 1;
+}
+
+#enum-actions {
+    height: auto;
+    align-horizontal: right;
+}
+
+#enum-actions Button {
+    margin-left: 1;
+}
+
+#confirm-message {
+    padding-bottom: 1;
+}
+
+#clients-actions,
+#form-actions,
+#confirm-actions,
+#tools-actions {
+    height: auto;
+    align-horizontal: right;
+}
+
+#clients-actions Button {
+    margin-right: 1;
+}
+
+#form-actions Button,
+#confirm-actions Button {
+    margin-left: 1;
+}
+
+#main {
+    height: 1fr;
+}
+
+Sidebar {
+    width: 36;
+    border-right: solid $panel;
+    padding: 0 1;
+}
+
+#sidebar-title {
+    text-style: bold;
+}
+
+#sidebar-rule {
+    margin: 0;
+    color: $panel;
+}
+
+#investigations {
+    height: 1fr;
+    border: none;
+    background: transparent;
+}
+
+#content {
+    width: 1fr;
+    padding: 1 2;
+}
+
+GraphView {
+    height: 1fr;
+}
+
+#graph-tree {
+    height: 1fr;
+    border: round $panel;
+    padding: 0 1;
+}
+
+#content-title {
+    text-style: bold;
+}
+
+#keyring-status {
+    color: $text-muted;
+}
