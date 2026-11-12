@@ -5,7 +5,12 @@
 ClientsScreen,
 ClientForm,
 ConfirmScreen,
-NamePrompt {
+EntityEditForm,
+EntityForm,
+EnumPicker,
+NamePrompt,
+ToolParamsForm,
+ToolsScreen {
     align: center middle;
 }
 
@@ -26,7 +31,23 @@ NamePrompt {
 #form-dialog {
     width: 72;
     height: auto;
+    max-height: 90%;
+    overflow-y: auto;
     border: thick $primary;
+}
+
+#tools-dialog {
+    width: 90;
+    height: 60%;
+    padding: 1 2;
+    background: $surface;
+    border: thick $primary;
+}
+
+#tools-list {
+    height: 1fr;
+    border: round $panel;
+    padding: 0 1;
 }
 
 #confirm-dialog {
@@ -54,13 +75,46 @@ NamePrompt {
     margin-bottom: 1;
 }
 
+#form-dialog Select,
+#form-dialog .param-multi {
+    width: 100%;
+    margin-bottom: 1;
+}
+
+#enum-dialog {
+    width: 56;
+    height: auto;
+    max-height: 80%;
+    padding: 1 2;
+    background: $surface;
+    border: thick $primary;
+}
+
+#enum-options {
+    height: auto;
+    max-height: 18;
+    background: transparent;
+    border: round $panel;
+    padding: 0 1;
+}
+
+#enum-actions {
+    height: auto;
+    align-horizontal: right;
+}
+
+#enum-actions Button {
+    margin-left: 1;
+}
+
 #confirm-message {
     padding-bottom: 1;
 }
 
 #clients-actions,
 #form-actions,
-#confirm-actions {
+#confirm-actions,
+#tools-actions {
     height: auto;
     align-horizontal: right;
 }
@@ -102,6 +156,16 @@ Sidebar {
 #content {
     width: 1fr;
     padding: 1 2;
+}
+
+GraphView {
+    height: 1fr;
+}
+
+#graph-tree {
+    height: 1fr;
+    border: round $panel;
+    padding: 0 1;
 }
 
 #content-title {
